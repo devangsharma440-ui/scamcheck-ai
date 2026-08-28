@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScamCheck AI — Suspicious Message Risk Analyzer</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="site-header">
+    <div class="container header-container">
+      <div class="logo">
+        <span class="logo-icon">🛡️</span>
+        <span class="logo-text">ScamCheck <span class="logo-highlight">AI</span></span>
+      </div>
+      <div class="header-tag">Free Scam Risk Analyzer</div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <h1 class="hero-title">Not sure if a message is safe? Check it with AI.</h1>
+        <p class="hero-subtitle">Analyze suspicious messages and understand the warning signs before you click, pay, or share information.</p>
+        <div class="hero-instruction">
+          <span class="info-badge">How it works</span>
+          <span>Paste a suspicious message and let AI identify potential risk signals and tell you what to do next.</span>
+        </div>
+      </section>
+
+      <!-- Input Card Section -->
+      <section class="card input-card">
+        <!-- Quick Sample Chips -->
+        <div class="samples-wrapper">
+          <span class="samples-label">Try an example:</span>
+          <div class="samples-list">
+            <button type="button" class="sample-chip" data-example="job">💼 Job Offer Fee</button>
+            <button type="button" class="sample-chip" data-example="bank">🏦 Bank KYC / OTP</button>
+            <button type="button" class="sample-chip" data-example="courier">📦 Parcel Delivery Link</button>
+            <button type="button" class="sample-chip" data-example="lottery">🎁 Prize Winner</button>
+            <button type="button" class="sample-chip" data-example="safe">✅ Safe Message</button>
+          </div>
+        </div>
+
+        <form id="analyze-form" class="analyze-form">
+          <div class="textarea-wrapper">
+            <textarea
+              id="message-input"
+              name="message"
+              rows="6"
+              placeholder="Paste your suspicious message here..."
+              aria-label="Paste suspicious message"
+              required
+            ></textarea>
+            <div class="textarea-footer">
+              <span id="char-count" class="char-count">0 characters</span>
+              <button type="button" id="clear-btn" class="btn-text" style="display: none;">Clear</button>
+            </div>
+          </div>
+
+          <!-- Alert / Error message container -->
+          <div id="error-message" class="alert alert-error" style="display: none;" role="alert"></div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="submit-btn" class="btn btn-primary">
+            <span class="btn-text-content">Check Message</span>
+            <span class="btn-spinner" style="display: none;"></span>
+          </button>
+        </form>
+      </section>
+
+      <!-- Loading State Card -->
+      <section id="loading-card" class="card loading-card" style="display: none;">
+        <div class="spinner-large"></div>
+        <h3>Analyzing Risk Signals...</h3>
+        <p>Checking for urgency, fee requests, suspicious URLs, and phishing patterns.</p>
+      </section>
+
+      <!-- Result Card Section -->
+      <section id="result-card" class="card result-card" style="display: none;">
+        <!-- Result Header -->
+        <div class="result-header">
+          <div class="risk-overview">
+            <div class="risk-badge-wrapper">
+              <span class="label-muted">Risk Assessment:</span>
+              <span id="risk-badge" class="risk-badge badge-high">HIGH</span>
+            </div>
+            <div class="score-container">
+              <div class="score-text">
+                <span class="label-muted">Risk Score:</span>
+                <span id="risk-score-value" class="score-number">85</span><span class="score-max">/100</span>
+              </div>
+              <div class="score-bar-bg">
+                <div id="risk-score-bar" class="score-bar-fill bar-high" style="width: 85%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simple Explanation -->
+        <div class="result-section explanation-section">
+          <h4 class="section-title">
+            <span class="section-icon">💡</span> Summary Explanation
+          </h4>
+          <p id="result-explanation" class="explanation-text"></p>
+        </div>
+
+        <!-- Detected Signals -->
+        <div class="result-section">
+          <h4 class="section-title">
+            <span class="section-icon">⚠️</span> Suspicious Signals Detected
+          </h4>
+          <ul id="result-signals" class="signals-list"></ul>
+        </div>
+
+        <!-- Grid for Do & Don't -->
+        <div class="guidance-grid">
+          <!-- What You Should Do -->
+          <div class="guidance-card guidance-do">
+            <h4 class="guidance-title">
+              <span class="guidance-icon">✅</span> What You Should Do
+            </h4>
+            <ul id="result-do-next" class="guidance-list"></ul>
+          </div>
+
+          <!-- What You Should NOT Do -->
+          <div class="guidance-card guidance-avoid">
+            <h4 class="guidance-title">
+              <span class="guidance-icon">🚫</span> What You Should NOT Do
+            </h4>
+            <ul id="result-avoid" class="guidance-list"></ul>
+          </div>
+        </div>
+
+        <!-- Important Information Detected -->
+        <div class="result-section details-section">
+          <h4 class="section-title">
+            <span class="section-icon">🔍</span> Important Information Detected
+          </h4>
+          <ul id="result-important-details" class="details-list"></ul>
+        </div>
+
+        <!-- Action Footer -->
+        <div class="result-footer">
+          <button type="button" id="check-another-btn" class="btn btn-secondary">
+            Check Another Message
+          </button>
+        </div>
+      </section>
+
+      <!-- Disclaimer -->
+      <footer class="disclaimer-footer">
+        <p>ScamCheck AI provides AI-generated risk analysis and is not a guarantee that a message is fraudulent. Always verify important information through official sources.</p>
+      </footer>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
