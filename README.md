@@ -1,112 +1,73 @@
-﻿# ScamCheck AI 🛡️
+﻿# ScamCheck AI 🛡️ — Professional Scam & Risk Analyzer (Version 2.0)
 
-A simple, clean, and modern web application that analyzes suspicious WhatsApp messages, SMS, emails, job offers, payment requests, and other text to identify potential scam and risk signals using Google Gemini AI.
-
----
-
-## Features
-
-- **Risk Assessment**: Classifies risk level as `LOW`, `MEDIUM`, or `HIGH`.
-- **Risk Score**: Visual score gauge from 0 to 100 representing detected signal severity.
-- **Suspicious Signals**: Clear bullet points highlighting detected red flags (e.g., upfront payment, urgency, credential harvesting).
-- **Simple Explanation**: Easy-to-understand summary of why the message may be safe or risky.
-- **Actionable Guidance**: Clear breakdown of **What You Should Do** and **What You Should NOT Do**.
-- **Important Information Detected**: Automatically extracts detected monetary amounts, links/domains, phone numbers, and urgency claims.
-- **1-Click Quick Examples**: Preset sample messages (Job fee scam, Bank KYC phishing, Package delivery, Lottery, Safe chat) for fast testing.
-- **Resilient Architecture**: Dual-engine design with official Google Gemini API integration and an intelligent security heuristic fallback.
+A modern, fast, and responsive web application that analyzes suspicious WhatsApp messages, SMS, emails, job offers, payment requests, and text in **English, Hindi, and Hinglish** to identify potential fraud/risk signals using Google Gemini AI.
 
 ---
 
-## Project Structure
+## 🌟 What's New in Version 2.0
+
+1. **4-Tier Risk Assessment & Score (0–100)**:
+   - `0–29`: **Low Risk**
+   - `30–59`: **Medium Risk**
+   - `60–79`: **High Risk**
+   - `80–100`: **Critical Risk**
+2. **Scam Category Classification**:
+   - `Job Scam`
+   - `Bank/KYC Scam`
+   - `UPI/Payment Scam`
+   - `Phishing`
+   - `Fake Reward/Lottery`
+   - `Investment/Crypto Scam`
+   - `Impersonation Scam`
+   - `Other Suspicious Message`
+   - `Safe / Informational Message`
+3. **Multilingual Support (English, Hindi & Hinglish)**:
+   - Understands native Hindi (Devanagari) and Hinglish phrases (e.g. *"bhai ₹500 registration fee do"*, *"आपका KYC बंद हो जाएगा"*, *"OTP batao"*).
+4. **Enhanced URL & Entity Extraction**:
+   - Detects standard and non-standard TLDs, shortened URLs (bit.ly, tinyurl, etc.), raw IP addresses, and displays them as *requiring verification*.
+   - Extracts currencies and amounts (₹, $, Rs, INR, EUR, GBP, Lakhs, Crores).
+5. **One-Click Clipboard Copying**:
+   - Copy clean, formatted risk analysis reports to share on WhatsApp or save for records.
+6. **Production & Render Cloud Ready**:
+   - Preserves complete backward compatibility with `render.yaml`, environment variables (`PORT`, `GEMINI_API_KEY`), and zero extra dependencies.
+
+---
+
+## 📁 Project Structure
 
 ```
 scamcheck-ai/
 ├── public/
-│   ├── index.html      # Responsive semantic HTML5 single page
-│   ├── style.css       # Clean, modern styling & accessible color contrast
-│   └── app.js          # Interactive frontend logic & API communication
+│   ├── index.html      # Responsive UI with Category badges & Copy Result
+│   ├── style.css       # 4-tier risk themes & mobile-friendly cards
+│   └── app.js          # Interactive frontend logic & clipboard handler
 ├── .env.example        # Environment variables template
 ├── .env                # Local environment variables
 ├── package.json        # Dependencies and scripts
-├── server.js           # Express server and Gemini AI / Heuristic backend
-├── test.js             # Automated end-to-end test suite
+├── render.yaml         # Render Blueprint configuration
+├── server.js           # Express server & dual AI/Heuristic analyzer
+├── test.js             # Automated 25-point test suite
 └── README.md           # Documentation
 ```
 
 ---
 
-## How to Run
+## 🚀 How to Run Locally
 
-### 1. Install Dependencies
 ```bash
+# 1. Install dependencies
 npm install
-```
 
-### 2. Configure Environment Variables
-Copy `.env.example` to `.env` (already done by default) and optionally provide your Gemini API key:
-```env
-PORT=3000
-GEMINI_API_KEY=your_gemini_api_key_here
-```
-> *Note: If `GEMINI_API_KEY` is not provided, the app will seamlessly run using its built-in security heuristic engine.*
-
-### 3. Start the Server
-```bash
+# 2. Start the application
 npm start
 ```
-Then open [http://localhost:3000](http://localhost:3000) in your browser.
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## Running the Automated Test Suite
+## 🧪 Run Automated Tests
 
-To run the verification suite:
 ```bash
 node test.js
-```
-
----
-
-## API Specification
-
-### `POST /api/analyze`
-**Request Body:**
-```json
-{
-  "message": "Congratulations! You have been selected for a job. Pay ₹2,999 registration fee immediately to confirm your position."
-}
-```
-
-**Response (`200 OK`):**
-```json
-{
-  "riskLevel": "HIGH",
-  "riskScore": 95,
-  "signals": [
-    "Upfront payment or processing fee requested",
-    "Urgent or threatening language pushing for immediate action",
-    "Unsolicited employment or high-earning promise with minimal criteria"
-  ],
-  "explanation": "This message displays multiple strong warning signs characteristic of common scams, including requests for payment, credential disclosure, or high-pressure tactics.",
-  "doNext": [
-    "Verify the sender through known official contact channels independently.",
-    "Cross-check company or recruiter identity on their official website or LinkedIn.",
-    "Report or mark the message/sender as spam or phishing."
-  ],
-  "avoid": [
-    "Do NOT send any money, registration fees, or security deposits.",
-    "Do NOT click on unverified links or scan provided QR codes.",
-    "Do NOT share OTPs, passwords, bank account numbers, or KYC documents."
-  ],
-  "importantDetails": [
-    "Mentioned Payment/Amount: ₹2,999"
-  ]
-}
-```
-
-**Empty Input (`400 Bad Request`):**
-```json
-{
-  "error": "Please paste a message first."
-}
 ```

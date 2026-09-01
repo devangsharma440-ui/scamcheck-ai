@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -17,7 +17,7 @@
         <span class="logo-icon">🛡️</span>
         <span class="logo-text">ScamCheck <span class="logo-highlight">AI</span></span>
       </div>
-      <div class="header-tag">Free Scam Risk Analyzer</div>
+      <div class="header-tag">Professional Risk Analyzer</div>
     </div>
   </header>
 
@@ -30,7 +30,7 @@
         <p class="hero-subtitle">Analyze suspicious messages and understand the warning signs before you click, pay, or share information.</p>
         <div class="hero-instruction">
           <span class="info-badge">How it works</span>
-          <span>Paste a suspicious message and let AI identify potential risk signals and tell you what to do next.</span>
+          <span>Paste a suspicious message in English, Hindi, or Hinglish to identify risk signals, scam categories, and next steps.</span>
         </div>
       </section>
 
@@ -40,11 +40,11 @@
         <div class="samples-wrapper">
           <span class="samples-label">Try an example:</span>
           <div class="samples-list">
-            <button type="button" class="sample-chip" data-example="job">💼 Job Offer Fee</button>
-            <button type="button" class="sample-chip" data-example="bank">🏦 Bank KYC / OTP</button>
+            <button type="button" class="sample-chip" data-example="reward">🎁 ₹25,000 Prize + Fee</button>
+            <button type="button" class="sample-chip" data-example="kyc">🏦 Bank KYC Expiry OTP</button>
+            <button type="button" class="sample-chip" data-example="hinglishJob">💼 Hinglish Job Fee</button>
             <button type="button" class="sample-chip" data-example="courier">📦 Parcel Delivery Link</button>
-            <button type="button" class="sample-chip" data-example="lottery">🎁 Prize Winner</button>
-            <button type="button" class="sample-chip" data-example="safe">✅ Safe Message</button>
+            <button type="button" class="sample-chip" data-example="safeInterview">✅ Safe Interview Invite</button>
           </div>
         </div>
 
@@ -79,26 +79,45 @@
       <section id="loading-card" class="card loading-card" style="display: none;">
         <div class="spinner-large"></div>
         <h3>Analyzing Risk Signals...</h3>
-        <p>Checking for urgency, fee requests, suspicious URLs, and phishing patterns.</p>
+        <p>Scanning for upfront fees, credential requests, fake rewards, urgent pressure, and unverified links...</p>
       </section>
 
       <!-- Result Card Section -->
       <section id="result-card" class="card result-card" style="display: none;">
-        <!-- Result Header -->
+        <!-- REQUIRED RESULT HEADER -->
         <div class="result-header">
-          <div class="risk-overview">
-            <div class="risk-badge-wrapper">
-              <span class="label-muted">Risk Assessment:</span>
-              <span id="risk-badge" class="risk-badge badge-high">HIGH</span>
-            </div>
-            <div class="score-container">
-              <div class="score-text">
-                <span class="label-muted">Risk Score:</span>
-                <span id="risk-score-value" class="score-number">85</span><span class="score-max">/100</span>
+          <div class="result-card-title-row">
+            <h3 class="assessment-title">🛡️ ScamCheck AI Risk Assessment</h3>
+            <!-- Copy Result Button -->
+            <button type="button" id="copy-result-btn" class="btn-copy" title="Copy full analysis to clipboard">
+              <span id="copy-btn-icon">📋</span>
+              <span id="copy-btn-text">Copy Result</span>
+            </button>
+          </div>
+
+          <!-- Prominent Risk Assessment Metrics Card -->
+          <div class="assessment-summary-box">
+            <!-- 1. Risk Score -->
+            <div class="assessment-metric score-metric">
+              <span class="metric-label">Risk Score:</span>
+              <div class="score-display">
+                <span id="risk-score-value" class="score-number">80</span><span class="score-max">/100</span>
               </div>
               <div class="score-bar-bg">
-                <div id="risk-score-bar" class="score-bar-fill bar-high" style="width: 85%;"></div>
+                <div id="risk-score-bar" class="score-bar-fill bar-critical" style="width: 80%;"></div>
               </div>
+            </div>
+
+            <!-- 2. Risk Level -->
+            <div class="assessment-metric level-metric">
+              <span class="metric-label">Risk Level:</span>
+              <span id="risk-badge" class="risk-badge badge-critical">CRITICAL RISK</span>
+            </div>
+
+            <!-- 3. Scam Category -->
+            <div class="assessment-metric category-metric">
+              <span class="metric-label">Scam Category:</span>
+              <span id="category-badge" class="category-badge">Job Scam</span>
             </div>
           </div>
         </div>
