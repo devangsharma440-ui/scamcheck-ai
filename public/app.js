@@ -88,7 +88,10 @@ document.addEventListener("DOMContentLoaded", () => {
       hideError();
       resultCard.style.display = "none";
       currentAnalysisData = null;
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      const scannerSection = document.getElementById("analyzer");
+      if (scannerSection) {
+        scannerSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
       messageInput.focus();
     });
   }

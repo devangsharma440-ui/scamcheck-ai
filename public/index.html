@@ -1,184 +1,538 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ScamCheck AI — Suspicious Message Risk Analyzer</title>
+  <title>ScamCheck AI — Check Before You Trust</title>
+  <meta name="description" content="ScamCheck AI analyzes suspicious messages, links, payment requests and job offers to identify potential scam risks.">
+  
+  <!-- Open Graph / Social Metadata -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ScamCheck AI — Check Before You Trust">
+  <meta property="og:description" content="Analyze suspicious messages, links, payment requests and job offers with AI-powered risk analysis.">
+  <meta property="og:site_name" content="ScamCheck AI">
+  
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Header / Navigation -->
+
+  <!-- Site Navigation Header -->
   <header class="site-header">
     <div class="container header-container">
-      <div class="logo">
+      <a href="#home" class="logo">
         <span class="logo-icon">🛡️</span>
         <span class="logo-text">ScamCheck <span class="logo-highlight">AI</span></span>
-      </div>
-      <div class="header-tag">Professional Risk Analyzer</div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#how-it-works" class="nav-link">How It Works</a>
+        <a href="#categories" class="nav-link">Threat Categories</a>
+        <a href="#why-us" class="nav-link">Why Us</a>
+        <a href="#examples" class="nav-link">Example</a>
+        <a href="#safety" class="nav-link">Safety</a>
+      </nav>
+
+      <a href="#analyzer" class="btn btn-header-cta">Check a Message</a>
     </div>
   </header>
 
-  <!-- Main Content -->
+  <!-- Main Content Wrapper -->
   <main class="main-content">
-    <div class="container">
-      <!-- Hero Section -->
-      <section class="hero-section">
-        <h1 class="hero-title">Not sure if a message is safe? Check it with AI.</h1>
-        <p class="hero-subtitle">Analyze suspicious messages and understand the warning signs before you click, pay, or share information.</p>
-        <div class="hero-instruction">
-          <span class="info-badge">How it works</span>
-          <span>Paste a suspicious message in English, Hindi, or Hinglish to identify risk signals, scam categories, and next steps.</span>
+    
+    <!-- 1. Hero Section -->
+    <section id="home" class="hero-section">
+      <div class="container hero-container">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          <span>AI-Powered Scam & Risk Detection</span>
         </div>
-      </section>
+        
+        <h1 class="hero-title">Check Before You Trust.</h1>
+        <p class="hero-subtitle">Analyze suspicious messages, links, payment requests and job offers with AI-powered risk analysis.</p>
 
-      <!-- Input Card Section -->
-      <section class="card input-card">
-        <!-- Quick Sample Chips -->
-        <div class="samples-wrapper">
-          <span class="samples-label">Try an example:</span>
-          <div class="samples-list">
-            <button type="button" class="sample-chip" data-example="reward">🎁 ₹25,000 Prize + Fee</button>
-            <button type="button" class="sample-chip" data-example="kyc">🏦 Bank KYC Expiry OTP</button>
-            <button type="button" class="sample-chip" data-example="hinglishJob">💼 Hinglish Job Fee</button>
-            <button type="button" class="sample-chip" data-example="courier">📦 Parcel Delivery Link</button>
-            <button type="button" class="sample-chip" data-example="safeInterview">✅ Safe Interview Invite</button>
-          </div>
+        <div class="hero-cta-group">
+          <a href="#analyzer" class="btn btn-primary btn-hero">Check a Message</a>
+          <a href="#how-it-works" class="btn btn-secondary btn-hero">How It Works</a>
         </div>
 
-        <form id="analyze-form" class="analyze-form">
-          <div class="textarea-wrapper">
-            <textarea
-              id="message-input"
-              name="message"
-              rows="6"
-              placeholder="Paste your suspicious message here..."
-              aria-label="Paste suspicious message"
-              required
-            ></textarea>
-            <div class="textarea-footer">
-              <span id="char-count" class="char-count">0 characters</span>
-              <button type="button" id="clear-btn" class="btn-text" style="display: none;">Clear</button>
+        <div class="trust-statement">
+          <span>⚡ Fast</span>
+          <span class="trust-dot">•</span>
+          <span>🤖 AI-powered</span>
+          <span class="trust-dot">•</span>
+          <span>🔒 Privacy-conscious</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Live Scanner / Interactive Analyzer Section -->
+    <section id="analyzer" class="scanner-section">
+      <div class="container">
+        <div class="section-header-compact text-center">
+          <span class="section-kicker">Live Scanner</span>
+          <h2 class="section-heading">Scan Any Suspicious Message</h2>
+          <p class="section-subtext">Paste suspicious text from WhatsApp, SMS, Telegram, emails, or job portals to get an instant risk assessment.</p>
+        </div>
+
+        <!-- Input Card -->
+        <div class="card input-card">
+          <!-- Quick Sample Chips -->
+          <div class="samples-wrapper">
+            <span class="samples-label">Quick sample scenarios:</span>
+            <div class="samples-list">
+              <button type="button" class="sample-chip" data-example="reward">🎁 ₹25,000 Prize + Fee</button>
+              <button type="button" class="sample-chip" data-example="kyc">🏦 Bank KYC Expiry OTP</button>
+              <button type="button" class="sample-chip" data-example="hinglishJob">💼 Hinglish Job Fee</button>
+              <button type="button" class="sample-chip" data-example="courier">📦 Parcel Delivery Link</button>
+              <button type="button" class="sample-chip" data-example="safeInterview">✅ Safe Interview Invite</button>
             </div>
           </div>
 
-          <!-- Alert / Error message container -->
-          <div id="error-message" class="alert alert-error" style="display: none;" role="alert"></div>
+          <form id="analyze-form" class="analyze-form">
+            <div class="textarea-wrapper">
+              <textarea
+                id="message-input"
+                name="message"
+                rows="6"
+                placeholder="Paste your suspicious message here..."
+                aria-label="Paste suspicious message"
+                required
+              ></textarea>
+              <div class="textarea-footer">
+                <span id="char-count" class="char-count">0 characters</span>
+                <button type="button" id="clear-btn" class="btn-text" style="display: none;">Clear</button>
+              </div>
+            </div>
 
-          <!-- Submit Button -->
-          <button type="submit" id="submit-btn" class="btn btn-primary">
-            <span class="btn-text-content">Check Message</span>
-            <span class="btn-spinner" style="display: none;"></span>
-          </button>
-        </form>
-      </section>
+            <!-- Alert / Error message container -->
+            <div id="error-message" class="alert alert-error" style="display: none;" role="alert"></div>
 
-      <!-- Loading State Card -->
-      <section id="loading-card" class="card loading-card" style="display: none;">
-        <div class="spinner-large"></div>
-        <h3>Analyzing Risk Signals...</h3>
-        <p>Scanning for upfront fees, credential requests, fake rewards, urgent pressure, and unverified links...</p>
-      </section>
+            <!-- Submit Button -->
+            <button type="submit" id="submit-btn" class="btn btn-primary btn-submit">
+              <span class="btn-text-content">Analyze Message</span>
+              <span class="btn-spinner" style="display: none;"></span>
+            </button>
+          </form>
+        </div>
 
-      <!-- Result Card Section -->
-      <section id="result-card" class="card result-card" style="display: none;">
-        <!-- REQUIRED RESULT HEADER -->
-        <div class="result-header">
-          <div class="result-card-title-row">
-            <h3 class="assessment-title">🛡️ ScamCheck AI Risk Assessment</h3>
-            <!-- Copy Result Button -->
-            <button type="button" id="copy-result-btn" class="btn-copy" title="Copy full analysis to clipboard">
-              <span id="copy-btn-icon">📋</span>
-              <span id="copy-btn-text">Copy Result</span>
+        <!-- Loading State Card -->
+        <div id="loading-card" class="card loading-card" style="display: none;">
+          <div class="spinner-large"></div>
+          <h3>Analyzing Risk Signals...</h3>
+          <p>Scanning for upfront fees, credential requests, fake rewards, urgent pressure, and unverified links...</p>
+        </div>
+
+        <!-- Result Card Section -->
+        <div id="result-card" class="card result-card" style="display: none;">
+          <!-- REQUIRED RESULT HEADER -->
+          <div class="result-header">
+            <div class="result-card-title-row">
+              <h3 class="assessment-title">🛡️ ScamCheck AI Risk Assessment</h3>
+              <!-- Copy Result Button -->
+              <button type="button" id="copy-result-btn" class="btn-copy" title="Copy full analysis to clipboard">
+                <span id="copy-btn-icon">📋</span>
+                <span id="copy-btn-text">Copy Result</span>
+              </button>
+            </div>
+
+            <!-- Prominent Risk Assessment Metrics Card -->
+            <div class="assessment-summary-box">
+              <!-- 1. Risk Score -->
+              <div class="assessment-metric score-metric">
+                <span class="metric-label">Risk Score:</span>
+                <div class="score-display">
+                  <span id="risk-score-value" class="score-number">80</span><span class="score-max">/100</span>
+                </div>
+                <div class="score-bar-bg">
+                  <div id="risk-score-bar" class="score-bar-fill bar-critical" style="width: 80%;"></div>
+                </div>
+              </div>
+
+              <!-- 2. Risk Level -->
+              <div class="assessment-metric level-metric">
+                <span class="metric-label">Risk Level:</span>
+                <span id="risk-badge" class="risk-badge badge-critical">CRITICAL RISK</span>
+              </div>
+
+              <!-- 3. Scam Category -->
+              <div class="assessment-metric category-metric">
+                <span class="metric-label">Scam Category:</span>
+                <span id="category-badge" class="category-badge">Job Scam</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Simple Explanation -->
+          <div class="result-section explanation-section">
+            <h4 class="section-title">
+              <span class="section-icon">💡</span> Summary Explanation
+            </h4>
+            <p id="result-explanation" class="explanation-text"></p>
+          </div>
+
+          <!-- Detected Signals -->
+          <div class="result-section">
+            <h4 class="section-title">
+              <span class="section-icon">⚠️</span> Suspicious Signals Detected
+            </h4>
+            <ul id="result-signals" class="signals-list"></ul>
+          </div>
+
+          <!-- Grid for Do & Don't -->
+          <div class="guidance-grid">
+            <!-- What You Should Do -->
+            <div class="guidance-card guidance-do">
+              <h4 class="guidance-title">
+                <span class="guidance-icon">✅</span> What You Should Do
+              </h4>
+              <ul id="result-do-next" class="guidance-list"></ul>
+            </div>
+
+            <!-- What You Should NOT Do -->
+            <div class="guidance-card guidance-avoid">
+              <h4 class="guidance-title">
+                <span class="guidance-icon">🚫</span> What You Should NOT Do
+              </h4>
+              <ul id="result-avoid" class="guidance-list"></ul>
+            </div>
+          </div>
+
+          <!-- Important Information Detected -->
+          <div class="result-section details-section">
+            <h4 class="section-title">
+              <span class="section-icon">🔍</span> Important Information Detected
+            </h4>
+            <ul id="result-important-details" class="details-list"></ul>
+          </div>
+
+          <!-- Action Footer -->
+          <div class="result-footer">
+            <button type="button" id="check-another-btn" class="btn btn-secondary">
+              Check Another Message
             </button>
           </div>
+        </div>
 
-          <!-- Prominent Risk Assessment Metrics Card -->
-          <div class="assessment-summary-box">
-            <!-- 1. Risk Score -->
-            <div class="assessment-metric score-metric">
-              <span class="metric-label">Risk Score:</span>
-              <div class="score-display">
-                <span id="risk-score-value" class="score-number">80</span><span class="score-max">/100</span>
-              </div>
-              <div class="score-bar-bg">
-                <div id="risk-score-bar" class="score-bar-fill bar-critical" style="width: 80%;"></div>
-              </div>
+      </div>
+    </section>
+
+    <!-- 3. How It Works Section -->
+    <section id="how-it-works" class="features-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-kicker">Simple Process</span>
+          <h2 class="section-heading">How It Works</h2>
+          <p class="section-subtext">Three simple steps to verify before you click, pay, or share.</p>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-number">01</div>
+            <h3 class="step-title">Paste</h3>
+            <p class="step-desc">Paste the suspicious message, link or offer into the scanner.</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">02</div>
+            <h3 class="step-title">Analyze</h3>
+            <p class="step-desc">ScamCheck AI checks for common scam signals and risk patterns.</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">03</div>
+            <h3 class="step-title">Protect</h3>
+            <p class="step-desc">Review the risk assessment and recommended next steps.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Detection Categories Section -->
+    <section id="categories" class="categories-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-kicker">Threat Intelligence</span>
+          <h2 class="section-heading">Scam Categories We Detect</h2>
+          <p class="section-subtext">Specialized risk detection patterns across prevalent digital fraud categories.</p>
+        </div>
+
+        <div class="categories-grid">
+          <div class="category-card">
+            <div class="category-icon">💼</div>
+            <h3 class="category-card-title">Job Scams</h3>
+            <p class="category-card-desc">Registration fee demands, fake offer letters, daily task scams, and work-from-home traps.</p>
+          </div>
+
+          <div class="category-card">
+            <div class="category-icon">🏦</div>
+            <h3 class="category-card-title">Bank & KYC Scams</h3>
+            <p class="category-card-desc">Fake account expiration threats, PAN/Aadhaar block warnings, and OTP disclosure prompts.</p>
+          </div>
+
+          <div class="category-card">
+            <div class="category-icon">💳</div>
+            <h3 class="category-card-title">UPI & Payment Scams</h3>
+            <p class="category-card-desc">QR code scanning traps to receive money, fake collect requests, and advance charges.</p>
+          </div>
+
+          <div class="category-card">
+            <div class="category-icon">🎣</div>
+            <h3 class="category-card-title">Phishing</h3>
+            <p class="category-card-desc">Deceptive credential collection portals, malicious links, and clone login pages.</p>
+          </div>
+
+          <div class="category-card">
+            <div class="category-icon">🎁</div>
+            <h3 class="category-card-title">Fake Rewards & Lottery</h3>
+            <p class="category-card-desc">Lucky draw prizes, gift vouchers, and cash rewards that require an advance "processing fee".</p>
+          </div>
+
+          <div class="category-card">
+            <div class="category-icon">📈</div>
+            <h3 class="category-card-title">Investment & Crypto Scams</h3>
+            <p class="category-card-desc">Guaranteed daily returns, double-money promises, and unauthorized trading pools.</p>
+          </div>
+
+          <div class="category-card">
+            <div class="category-icon">👤</div>
+            <h3 class="category-card-title">Impersonation</h3>
+            <p class="category-card-desc">Posing as bank officials, customs agents, electricity boards, or courier delivery services.</p>
+          </div>
+
+          <div class="category-card">
+            <div class="category-icon">🔗</div>
+            <h3 class="category-card-title">Suspicious Links</h3>
+            <p class="category-card-desc">Shortened URLs (bit.ly, tinyurl), non-standard TLDs (.xyz, .top), and masked redirectors.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Why ScamCheck AI Section -->
+    <section id="why-us" class="why-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-kicker">Core Capabilities</span>
+          <h2 class="section-heading">Why ScamCheck AI</h2>
+          <p class="section-subtext">Engineered to give you actionable clarity in seconds.</p>
+        </div>
+
+        <div class="benefits-grid">
+          <div class="benefit-item">
+            <div class="benefit-icon">🤖</div>
+            <div>
+              <h3 class="benefit-title">AI-Powered Risk Analysis</h3>
+              <p class="benefit-desc">Deep pattern evaluation identifying subtle social engineering cues and fraud indicators.</p>
             </div>
+          </div>
 
-            <!-- 2. Risk Level -->
-            <div class="assessment-metric level-metric">
-              <span class="metric-label">Risk Level:</span>
-              <span id="risk-badge" class="risk-badge badge-critical">CRITICAL RISK</span>
+          <div class="benefit-item">
+            <div class="benefit-icon">📊</div>
+            <div>
+              <h3 class="benefit-title">Clear 0–100 Risk Score</h3>
+              <p class="benefit-desc">Transparent scoring based on detected signals rather than arbitrary guesswork.</p>
             </div>
+          </div>
 
-            <!-- 3. Scam Category -->
-            <div class="assessment-metric category-metric">
-              <span class="metric-label">Scam Category:</span>
-              <span id="category-badge" class="category-badge">Job Scam</span>
+          <div class="benefit-item">
+            <div class="benefit-icon">🌐</div>
+            <div>
+              <h3 class="benefit-title">Hindi & Hinglish Support</h3>
+              <p class="benefit-desc">Understands localized fraud messages in English, native Hindi (Devanagari), and Hinglish.</p>
+            </div>
+          </div>
+
+          <div class="benefit-item">
+            <div class="benefit-icon">🔍</div>
+            <div>
+              <h3 class="benefit-title">Suspicious Link Detection</h3>
+              <p class="benefit-desc">Detects shortened, non-standard, and masked domains requiring verification.</p>
+            </div>
+          </div>
+
+          <div class="benefit-item">
+            <div class="benefit-icon">💰</div>
+            <div>
+              <h3 class="benefit-title">Payment and Amount Detection</h3>
+              <p class="benefit-desc">Automatically highlights fee demands and currencies (₹, $, INR, Rs, EUR, GBP).</p>
+            </div>
+          </div>
+
+          <div class="benefit-item">
+            <div class="benefit-icon">🛡️</div>
+            <div>
+              <h3 class="benefit-title">Actionable Safety Guidance</h3>
+              <p class="benefit-desc">Clear breakdown of protective steps to take and critical pitfalls to avoid.</p>
+            </div>
+          </div>
+
+          <div class="benefit-item">
+            <div class="benefit-icon">📋</div>
+            <div>
+              <h3 class="benefit-title">One-Click Result Copying</h3>
+              <p class="benefit-desc">Easily copy formatted summaries to share with friends, family, or colleagues.</p>
             </div>
           </div>
         </div>
+      </div>
+    </section>
 
-        <!-- Simple Explanation -->
-        <div class="result-section explanation-section">
-          <h4 class="section-title">
-            <span class="section-icon">💡</span> Summary Explanation
-          </h4>
-          <p id="result-explanation" class="explanation-text"></p>
+    <!-- 6. Example Section -->
+    <section id="examples" class="example-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-kicker">Interactive Showcase</span>
+          <h2 class="section-heading">Example Scam Breakdown</h2>
+          <p class="section-subtext">Here is how ScamCheck AI breaks down an incoming suspicious message.</p>
         </div>
 
-        <!-- Detected Signals -->
-        <div class="result-section">
-          <h4 class="section-title">
-            <span class="section-icon">⚠️</span> Suspicious Signals Detected
-          </h4>
-          <ul id="result-signals" class="signals-list"></ul>
-        </div>
-
-        <!-- Grid for Do & Don't -->
-        <div class="guidance-grid">
-          <!-- What You Should Do -->
-          <div class="guidance-card guidance-do">
-            <h4 class="guidance-title">
-              <span class="guidance-icon">✅</span> What You Should Do
-            </h4>
-            <ul id="result-do-next" class="guidance-list"></ul>
+        <div class="example-showcase-card">
+          <div class="example-input-preview">
+            <span class="example-tag">Sample Suspicious Message:</span>
+            <p class="example-quote">"Congratulations! You won ₹50,000. Pay ₹199 processing fee immediately to claim your reward."</p>
           </div>
 
-          <!-- What You Should NOT Do -->
-          <div class="guidance-card guidance-avoid">
-            <h4 class="guidance-title">
-              <span class="guidance-icon">🚫</span> What You Should NOT Do
-            </h4>
-            <ul id="result-avoid" class="guidance-list"></ul>
+          <div class="example-output-preview">
+            <span class="example-tag output-tag">Sample AI Risk Assessment Result:</span>
+            <div class="example-meta-row">
+              <span class="badge-critical example-badge">CRITICAL RISK</span>
+              <span class="category-badge example-cat">Category: Fake Reward/Lottery</span>
+              <span class="example-score">Risk Score: <strong>100/100</strong></span>
+            </div>
+            <div class="example-signals">
+              <strong>Key Warning Signals Detected:</strong>
+              <ul>
+                <li>Unsolicited ₹50,000 reward bait to create artificial excitement</li>
+                <li>Upfront ₹199 processing fee required before receiving prize</li>
+                <li>Artificial urgency demanding immediate payment</li>
+              </ul>
+            </div>
           </div>
         </div>
+      </div>
+    </section>
 
-        <!-- Important Information Detected -->
-        <div class="result-section details-section">
-          <h4 class="section-title">
-            <span class="section-icon">🔍</span> Important Information Detected
-          </h4>
-          <ul id="result-important-details" class="details-list"></ul>
+    <!-- 7. Safety Section -->
+    <section id="safety" class="safety-section">
+      <div class="container">
+        <div class="safety-card">
+          <div class="safety-header">
+            <span class="safety-shield">🛡️</span>
+            <div>
+              <h2 class="safety-title">Essential Safety Guidelines</h2>
+              <p class="safety-subtitle">Protect yourself and your loved ones from digital fraud.</p>
+            </div>
+          </div>
+
+          <div class="safety-highlight-box">
+            <p class="safety-highlight-text">
+              "Never share your OTP, password, PIN or banking credentials with someone just because a message asks for them."
+            </p>
+            <p class="safety-highlight-sub">
+              "Always verify important information through official channels."
+            </p>
+          </div>
+
+          <div class="safety-pillars-grid">
+            <div class="safety-pillar">
+              <h4>1. Keep Credentials Private</h4>
+              <p>Banks and legitimate companies will never request your OTP, PIN, or passwords over chat or phone calls.</p>
+            </div>
+
+            <div class="safety-pillar">
+              <h4>2. Cross-Verify Channels</h4>
+              <p>When in doubt, open the official app or website directly by typing the known URL in your browser.</p>
+            </div>
+
+            <div class="safety-pillar">
+              <h4>3. Never Pay for Jobs</h4>
+              <p>Legitimate employers do not ask candidates for registration fees or advance security deposits.</p>
+            </div>
+
+            <div class="safety-pillar">
+              <h4>4. Pause Under Pressure</h4>
+              <p>Scammers rely on fake urgency. Take a breath and consult a trusted person before taking action.</p>
+            </div>
+          </div>
         </div>
+      </div>
+    </section>
 
-        <!-- Action Footer -->
-        <div class="result-footer">
-          <button type="button" id="check-another-btn" class="btn btn-secondary">
-            Check Another Message
-          </button>
+    <!-- 8. Privacy & Trust Section -->
+    <section id="privacy" class="privacy-section">
+      <div class="container">
+        <div class="privacy-card">
+          <h2 class="privacy-title">🔒 Privacy & Responsible Use</h2>
+          <p class="privacy-text">
+            Use caution when sharing sensitive information. ScamCheck AI is designed to provide risk analysis, not to replace official verification.
+          </p>
+          <p class="privacy-subtext">
+            Avoid pasting sensitive personally identifiable information such as complete passwords, private PINs, or confidential identity documents into any web tool. Always confirm urgent financial matters with your authorized financial provider directly.
+          </p>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- Disclaimer -->
-      <footer class="disclaimer-footer">
-        <p>ScamCheck AI provides AI-generated risk analysis and is not a guarantee that a message is fraudulent. Always verify important information through official sources.</p>
-      </footer>
-    </div>
+    <!-- 9. Disclaimer Section -->
+    <section id="disclaimer" class="disclaimer-section">
+      <div class="container">
+        <div class="disclaimer-box">
+          <span class="disclaimer-icon">⚠️</span>
+          <p class="disclaimer-text">
+            <strong>Disclaimer:</strong> ScamCheck AI provides AI-generated risk analysis and is not a guarantee that a message is fraudulent. Always verify important information through official sources.
+          </p>
+        </div>
+      </div>
+    </section>
+
   </main>
+
+  <!-- 10. Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-brand">
+        <div class="logo">
+          <span class="logo-icon">🛡️</span>
+          <span class="logo-text">ScamCheck <span class="logo-highlight">AI</span></span>
+        </div>
+        <p class="footer-tagline">"Check Before You Trust."</p>
+        <p class="footer-desc">AI-powered scam detection for messages, job offers, links, and payment requests.</p>
+      </div>
+
+      <div class="footer-links-group">
+        <div class="footer-column">
+          <h4 class="footer-col-title">Navigation</h4>
+          <ul class="footer-nav-list">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#analyzer">Live Scanner</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#categories">Threat Categories</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4 class="footer-col-title">Trust & Safety</h4>
+          <ul class="footer-nav-list">
+            <li><a href="#why-us">Why ScamCheck AI</a></li>
+            <li><a href="#examples">Sample Analysis</a></li>
+            <li><a href="#safety">Safety Guidelines</a></li>
+            <li><a href="#privacy">Privacy & Trust</a></li>
+            <li><a href="#disclaimer">Disclaimer</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container footer-bottom-container">
+        <p>© 2026 ScamCheck AI. All rights reserved.</p>
+        <p>Built for everyday cyber safety awareness.</p>
+      </div>
+    </div>
+  </footer>
 
   <script src="app.js"></script>
 </body>
