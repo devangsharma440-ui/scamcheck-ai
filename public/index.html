@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -131,11 +131,18 @@
           <div class="result-header">
             <div class="result-card-title-row">
               <h3 class="assessment-title">🛡️ ScamCheck AI Risk Assessment</h3>
-              <!-- Copy Result Button -->
-              <button type="button" id="copy-result-btn" class="btn-copy" title="Copy full analysis to clipboard">
-                <span id="copy-btn-icon">📋</span>
-                <span id="copy-btn-text">Copy Result</span>
-              </button>
+              <div class="result-actions-group">
+                <!-- Copy Result Button -->
+                <button type="button" id="copy-result-btn" class="btn-action btn-copy" title="Copy full analysis to clipboard">
+                  <span id="copy-btn-icon">📋</span>
+                  <span id="copy-btn-text">Copy Result</span>
+                </button>
+                <!-- Share Result Button -->
+                <button type="button" id="share-result-btn" class="btn-action btn-share" title="Share analysis result">
+                  <span id="share-btn-icon">🔗</span>
+                  <span id="share-btn-text">Share Result</span>
+                </button>
+              </div>
             </div>
 
             <!-- Prominent Risk Assessment Metrics Card -->
@@ -533,6 +540,9 @@
       </div>
     </div>
   </footer>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast" style="display: none;" role="status" aria-live="polite"></div>
 
   <script src="app.js"></script>
 </body>

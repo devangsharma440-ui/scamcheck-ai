@@ -1,5 +1,5 @@
-/**
- * ScamCheck AI — Frontend Client Logic (Version 2.0)
+﻿/**
+ * ScamCheck AI — Frontend Client Logic (Version 3.0 with Share & Copy)
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -12,13 +12,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const clearBtn = document.getElementById("clear-btn");
   const charCount = document.getElementById("char-count");
   const errorMessage = document.getElementById("error-message");
+  const toast = document.getElementById("toast");
 
   const loadingCard = document.getElementById("loading-card");
   const resultCard = document.getElementById("result-card");
   const checkAnotherBtn = document.getElementById("check-another-btn");
+
+  // Copy & Share Result Buttons
   const copyResultBtn = document.getElementById("copy-result-btn");
   const copyBtnText = document.getElementById("copy-btn-text");
   const copyBtnIcon = document.getElementById("copy-btn-icon");
+
+  const shareResultBtn = document.getElementById("share-result-btn");
+  const shareBtnText = document.getElementById("share-btn-text");
+  const shareBtnIcon = document.getElementById("share-btn-icon");
 
   // Result Elements
   const riskBadge = document.getElementById("risk-badge");
@@ -31,8 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultAvoid = document.getElementById("result-avoid");
   const resultImportantDetails = document.getElementById("result-important-details");
 
-  // Current analysis data cache for copying
+  // Current analysis data cache for copying / sharing
   let currentAnalysisData = null;
+  let copyTimeoutId = null;
+  let shareTimeoutId = null;
+  let toastTimeoutId = null;
 
   // Sample Messages for 1-Click Quick Testing (English, Hindi & Hinglish)
   const sampleMessages = {
@@ -77,6 +87,8 @@ document.addEventListener("DOMContentLoaded", () => {
     hideError();
     resultCard.style.display = "none";
     currentAnalysisData = null;
+    resetCopyButton();
+    resetShareButton();
     messageInput.focus();
   });
 
@@ -88,12 +100,58 @@ document.addEventListener("DOMContentLoaded", () => {
       hideError();
       resultCard.style.display = "none";
       currentAnalysisData = null;
+      resetCopyButton();
+      resetShareButton();
       const scannerSection = document.getElementById("analyzer");
       if (scannerSection) {
         scannerSection.scrollIntoView({ behavior: "smooth", block: "start" });
       }
       messageInput.focus();
     });
+  }
+
+  // Toast Notification Helper
+  function showToast(message, duration = 3000) {
+    if (!toast) {
+      alert(message);
+      return;
+    }
+    if (toastTimeoutId) {
+      clearTimeout(toastTimeoutId);
+      toastTimeoutId = null;
+    }
+    toast.textContent = message;
+    toast.style.display = "block";
+
+    toastTimeoutId = setTimeout(() => {
+      toast.style.display = "none";
+      toastTimeoutId = null;
+    }, duration);
+  }
+
+  // Reset Button States
+  function resetCopyButton() {
+    if (copyTimeoutId) {
+      clearTimeout(copyTimeoutId);
+      copyTimeoutId = null;
+    }
+    if (copyResultBtn) {
+      copyResultBtn.classList.remove("copied");
+      if (copyBtnIcon) copyBtnIcon.textContent = "📋";
+      if (copyBtnText) copyBtnText.textContent = "Copy Result";
+    }
+  }
+
+  function resetShareButton() {
+    if (shareTimeoutId) {
+      clearTimeout(shareTimeoutId);
+      shareTimeoutId = null;
+    }
+    if (shareResultBtn) {
+      shareResultBtn.classList.remove("shared");
+      if (shareBtnIcon) shareBtnIcon.textContent = "🔗";
+      if (shareBtnText) shareBtnText.textContent = "Share Result";
+    }
   }
 
   // Copy Result Function with Clipboard API & Textarea Fallback
@@ -135,6 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Format Plain-Text Analysis Report (No HTML tags)
   function formatAnalysisForClipboard(data) {
     const level = (data.riskLevel || "MEDIUM").toUpperCase();
     const score = typeof data.riskScore === "number" ? data.riskScore : 0;
@@ -182,21 +241,62 @@ document.addEventListener("DOMContentLoaded", () => {
     return lines.join("\n");
   }
 
-  let copyTimeoutId = null;
+  // Share Result Handler with Web Share API & Clipboard Fallback
+  async function shareAnalysis(data) {
+    if (!data) return;
 
-  function resetCopyButton() {
-    if (copyTimeoutId) {
-      clearTimeout(copyTimeoutId);
-      copyTimeoutId = null;
+    const textToShare = formatAnalysisForClipboard(data);
+
+    // Check if Web Share API is supported
+    if (navigator.share && typeof navigator.share === "function") {
+      try {
+        await navigator.share({
+          title: "ScamCheck AI Risk Assessment",
+          text: textToShare
+        });
+
+        // Trigger temporary "Shared!" UI feedback
+        if (shareResultBtn) {
+          shareResultBtn.classList.add("shared");
+          if (shareBtnIcon) shareBtnIcon.textContent = "✅";
+          if (shareBtnText) shareBtnText.textContent = "Shared!";
+
+          if (shareTimeoutId) clearTimeout(shareTimeoutId);
+          shareTimeoutId = setTimeout(() => {
+            resetShareButton();
+          }, 2000);
+        }
+        return;
+      } catch (err) {
+        // If user cancelled the share modal (AbortError), don't show an error
+        if (err.name === "AbortError") {
+          return;
+        }
+        console.warn("navigator.share failed, switching to clipboard fallback:", err);
+      }
     }
-    if (copyResultBtn) {
-      copyResultBtn.classList.remove("copied");
-      if (copyBtnIcon) copyBtnIcon.textContent = "📋";
-      if (copyBtnText) copyBtnText.textContent = "Copy Result";
+
+    // Fallback: Copy to clipboard and show notification
+    const copySuccess = await copyAnalysisToClipboard(data);
+    if (copySuccess) {
+      showToast("Share isn't available here, so the result was copied instead.");
+
+      if (shareResultBtn) {
+        shareResultBtn.classList.add("shared");
+        if (shareBtnIcon) shareBtnIcon.textContent = "✅";
+        if (shareBtnText) shareBtnText.textContent = "Shared!";
+
+        if (shareTimeoutId) clearTimeout(shareTimeoutId);
+        shareTimeoutId = setTimeout(() => {
+          resetShareButton();
+        }, 2000);
+      }
+    } else {
+      alert("Unable to share or copy result. Please copy manually.");
     }
   }
 
-  // Copy Result Button Click Handler
+  // Copy Result Button Click Listener
   if (copyResultBtn) {
     copyResultBtn.addEventListener("click", async () => {
       if (!currentAnalysisData) {
@@ -218,6 +318,18 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         alert("Copy failed. Please try again.");
       }
+    });
+  }
+
+  // Share Result Button Click Listener
+  if (shareResultBtn) {
+    shareResultBtn.addEventListener("click", async () => {
+      if (!currentAnalysisData) {
+        alert("No analysis result to share. Please check a message first.");
+        return;
+      }
+
+      await shareAnalysis(currentAnalysisData);
     });
   }
 
@@ -276,7 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } finally {
       loadingCard.style.display = "none";
       submitBtn.disabled = false;
-      btnTextContent.textContent = "Check Message";
+      btnTextContent.textContent = "Analyze Message";
       btnSpinner.style.display = "none";
     }
   });
@@ -286,6 +398,7 @@ document.addEventListener("DOMContentLoaded", () => {
    */
   function renderResult(data) {
     resetCopyButton();
+    resetShareButton();
     const level = (data.riskLevel || "MEDIUM").toUpperCase();
     const score = typeof data.riskScore === "number" ? Math.min(Math.max(Math.round(data.riskScore), 0), 100) : 50;
     const category = data.category || "Scam Analysis";

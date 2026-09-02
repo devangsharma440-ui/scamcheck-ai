@@ -1,4 +1,4 @@
-import express from "express";
+﻿import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { GoogleGenAI, Type } from "@google/genai";
@@ -51,10 +51,10 @@ function extractUrlsAndDomains(message) {
 }
 
 /**
- * Enhanced Amount Extractor (supports ₹, $, INR, Rs, Lakh, Crore, etc.)
+ * Enhanced Amount Extractor (supports â‚¹, $, INR, Rs, Lakh, Crore, etc.)
  */
 function extractAmounts(message) {
-  const amountRegex = /(?:₹|rs\.?|inr|\$|usd|eur|£|€)\s?[\d,]+(?:\.\d+)?(?:\s*(?:lakh|crore|k|thousand|million))?|[\d,]+(?:\.\d+)?\s*(?:rupees|rupaye|rupe|rs\.?|inr|dollars|usd|euro|pounds|lakh|crore)\b/gi;
+  const amountRegex = /(?:\u20B9|₹|rs\.?|inr|\$|usd|eur|£|€)\s?[\d,]+(?:\.\d+)?(?:\s*(?:lakh|crore|k|thousand|million))?|[\d,]+(?:\.\d+)?\s*(?:rupees|rupaye|rupe|rs\.?|inr|dollars|usd|euro|pounds|lakh|crore)\b/gi;
   const matches = message.match(amountRegex) || [];
   return [...new Set(matches.map(m => m.trim()))];
 }
@@ -85,7 +85,7 @@ function analyzeWithHeuristics(message) {
       signals.push("Hyperlink present requiring domain verification before clicking");
       score += 15;
     }
-  } else if (/दिए\s*गए\s*लिंक|लिंक\s*पर|link\s*open\s*karo|click\s*here/i.test(message)) {
+  } else if (/à¤¦à¤¿à¤\s*à¤—à¤\s*à¤²à¤¿à¤‚à¤•|à¤²à¤¿à¤‚à¤•\s*à¤ªà¤°|link\s*open\s*karo|click\s*here/i.test(message)) {
     signals.push("Prompt pushing to click an external link");
     score += 15;
   }
@@ -104,20 +104,25 @@ function analyzeWithHeuristics(message) {
 
   // 3. Upfront Payment / Processing Fee / Registration Fee (+25)
   const isUpfrontFee = (
-    /registration\s+fee|processing\s+fee|refundable\s+fee|security\s+deposit|joining\s+fee|advance\s+fee|entry\s+fee|upfront\s+fee|pay\s+(?:₹|rs\.?|\$|\d+)/i.test(message) ||
-    /(?:fee|fees|paise?|paisa|rupaye?|rupees|amount|₹|\$)\s*(?:do|bhejo|jama\s*karo|transfer\s*karo|pay\s*karo|de\s*do|dena\s*hoga)/i.test(message) ||
-    /रजिस्ट्रेशन\s*फीस|प्रोसेसिंग\s*फीस|पैसे\s*(?:भेजें|दीजिए|जमा\s*करें|दो)|शुल्क\s*भुगतान/i.test(message)
+    /registration\s+fee|processing\s+fee|refundable\s+fee|security\s+deposit|joining\s+fee|advance\s+fee|entry\s+fee|upfront\s+fee|pay\s+(?:â‚¹|rs\.?|\$|\d+)/i.test(message) ||
+    /(?:fee|fees|paise?|paisa|rupaye?|rupees|amount|â‚¹|\$)\s*(?:do|bhejo|jama\s*karo|transfer\s*karo|pay\s*karo|de\s*do|dena\s*hoga|abhi\s*bhejo|abhi\s*do|send\s*karo|bhej\s*do)/i.test(message) ||
+    /(?:\d[\d,]*|[â‚¹$])\s*(?:rupaye?|rupees?|rs\.?)\s*(?:bhej[eo]?|do|send\s*karo|transfer\s*karo|de\s*do|abhi)/i.test(message) ||
+    /(?:payment|paisa|paise|amount)\s*(?:abhi|turant|jaldi)\s*(?:karo|bhejo|do|bhej\s*do|transfer\s*karo)/i.test(message) ||
+    /à¤°à¤œà¤¿à¤¸à¥à¤Ÿà¥à¤°à¥‡à¤¶à¤¨\s*à¤«à¥€à¤¸|à¤ªà¥à¤°à¥‹à¤¸à¥‡à¤¸à¤¿à¤‚à¤—\s*à¤«à¥€à¤¸|à¤ªà¥ˆà¤¸à¥‡\s*(?:à¤­à¥‡à¤œà¥‡à¤‚|à¤¦à¥€à¤œà¤¿à¤|à¤œà¤®à¤¾\s*à¤•à¤°à¥‡à¤‚|à¤¦à¥‹)|à¤¶à¥à¤²à¥à¤•\s*à¤­à¥à¤—à¤¤à¤¾à¤¨/i.test(message)
   );
   if (isUpfrontFee) {
     signals.push("Upfront payment or processing fee requested");
     score += 25;
+    if (/\d[\d,]*\s*(?:rupaye?|rupees?|rs\.?)/i.test(message) && /(?:bhej|send|transfer|pay|jama|do|dena)/i.test(message) && /(?:urgent|abhi|turant|legal action|blocked|jaldi)/i.test(message)) {
+      score = Math.max(score, 70);
+    }
   }
 
   // 4. Job Registration / Security Deposit / Guaranteed Job Offer (+20)
   const isJobScam = (
-    /selected\s+for\s+(?:a\s+)?job|job\s+offer|job\s+(?:is\s+)?confirm(?:ed)?|work\s+from\s+home\s+earn|earn\s+(?:₹|\$|\d+)\s*(?:daily|per\s+day|monthly)|part\s*time\s*job|guaranteed\s+income|telegram\s+task|like\s+and\s+subscribe\s+to\s+earn/i.test(message) ||
+    /selected\s+for\s+(?:a\s+)?(?:\w+\s+)?(?:job|work)|job\s+offer|job\s+(?:is\s+)?confirm(?:ed)?|work\s+from\s+home\s+(?:earn|job|opportunity)|earn\s+(?:â‚¹|\$|\d+)\s*(?:daily|per\s+day|monthly)|part\s*time\s*job|guaranteed\s+income|telegram\s+task|like\s+and\s+subscribe\s+to\s+earn/i.test(message) ||
     /(?:job|naukri|interview|vacancy)\s*(?:is\s+)?(?:confirm(?:ed)?|mil\s*gayi|pakki|hai|lag\s*gayi)/i.test(message) ||
-    /नौकरी\s*(?:पक्की|का\s*ऑफर|हेतु|चयन)|घर\s*बैठे\s*कमाएं/i.test(message)
+    /à¤¨à¥Œà¤•à¤°à¥€\s*(?:à¤ªà¤•à¥à¤•à¥€|à¤•à¤¾\s*à¤‘à¤«à¤°|à¤¹à¥‡à¤¤à¥|à¤šà¤¯à¤¨)|à¤˜à¤°\s*à¤¬à¥ˆà¤ à¥‡\s*à¤•à¤®à¤¾à¤à¤‚/i.test(message)
   );
   if (isJobScam) {
     signals.push("Job registration, security deposit, or unsolicited job guarantee offer");
@@ -128,11 +133,21 @@ function analyzeWithHeuristics(message) {
     }
   }
 
+  // 4b. Payment Screenshot / Proof Request (+15) â€” common in job/UPI scams
+  const isScreenshotRequest = (
+    /(?:send|share|upload|submit|bhejo|post)\s+(?:payment\s+)?(?:screenshot|proof|receipt|transaction\s+(?:id|proof|screenshot))/i.test(message) ||
+    /payment\s+(?:screenshot|proof|receipt)|transaction\s+screenshot/i.test(message)
+  );
+  if (isScreenshotRequest) {
+    signals.push("Request to send payment screenshot or transaction proof (payment fraud signal)");
+    score += 15;
+  }
+
   // 5. OTP / Password / Bank Details Request (+25)
   const isOtpCredential = (
     /\b(?:otp|one\s+time\s+password|cvv|atm\s+pin|mpin|netbanking|login\s+credentials|send\s+your\s+otp|share\s+(?:your\s+)?otp)\b/i.test(message) ||
     /(?:otp|pin|password|cvv)\s*(?:batao|bhejo|share\s*karo|do|send\s*karo|enter\s*karo)/i.test(message) ||
-    /(?:ओटीपी|otp)\s*(?:भेजें|बताएं|शेयर\s*करें|दो)|पासवर्ड\s*(?:बताएं|दीजिए)|गोपनीय\s*पिन/i.test(message)
+    /(?:\u0913\u091F\u0940\u092A\u0940|otp)\s*(?:\u092D\u0947\u091C\u0947\u0902|\u092C\u0924\u093E\u090F\u0902|\u0936\u0947\u092F\u0930\s*\u0915\u0930\u0947\u0902|\u0926\u094B)|\u092A\u093E\u0938\u0935\u0930\u094D\u0921\s*(?:\u092C\u0924\u093E\u090F\u0902|\u0926\u0940\u091C\u093F\u090F)|\u0917\u094B\u092A\u0928\u0940\u092F\s*\u092A\u093F\u0928/i.test(message)
   );
   if (isOtpCredential) {
     signals.push("Request for sensitive authentication credentials (OTP, PIN, Password, or Bank details)");
@@ -140,13 +155,17 @@ function analyzeWithHeuristics(message) {
     if (!detectedCategories.includes("Bank/KYC Scam")) detectedCategories.push("Bank/KYC Scam");
   }
 
-  // 6. Account / KYC Verification Pressure (+15)
+  // 6. Account / KYC Verification Pressure (+20)
+const isHindiKycScam = /KYC/i.test(message) && /[\u0900-\u097F]/.test(message);
   const isKycPressure = (
-    /kyc\s+(?:expire|update|suspended|pending|blocked|verification)|account\s+(?:blocked|suspended|closure|deactivated|frozen|terminated)|verify\s+pan|aadhaar\s+link|electricity\s+power\s+cut/i.test(message) ||
-    /(?:kyc|khata|account|केवाईसी|खाता)\s*(?:band|block|expire|update|khatam|rok\s*diya|बंद|ब्लॉक|समाप्त)/i.test(message) ||
-    /केवाईसी\s*(?:अपडेट|समाप्त|बंद|ब्लॉक)|खाता\s*(?:बंद|अवरुद्ध)/i.test(message)
+    /kyc\s+(?:has\s+)?(?:expire[sd]?|update[d]?|suspended|pending|blocked|verification|required|will\s+expire)/i.test(message) ||
+    /(?:update|verify|complete|submit)\s+(?:your\s+)?kyc/i.test(message) ||
+    /account\s+(?:blocked|suspended|closure|deactivated|frozen|terminated)/i.test(message) ||
+    /verify\s+pan|aadhaar\s+link|electricity\s+power\s+cut/i.test(message) ||
+    /(?:kyc|khata|account|à¤•à¥‡à¤µà¤¾à¤ˆà¤¸à¥€|à¤–à¤¾à¤¤à¤¾)\s*(?:band|block|expire|update|khatam|rok\s*diya|à¤¬à¤‚à¤¦|à¤¬à¥à¤²à¥‰à¤•|à¤¸à¤®à¤¾à¤ªà¥à¤¤)/i.test(message) ||
+    /à¤•à¥‡à¤µà¤¾à¤ˆà¤¸à¥€\s*(?:à¤…à¤ªà¤¡à¥‡à¤Ÿ|à¤¸à¤®à¤¾à¤ªà¥à¤¤|à¤¬à¤‚à¤¦|à¤¬à¥à¤²à¥‰à¤•)|à¤–à¤¾à¤¤à¤¾\s*(?:à¤¬à¤‚à¤¦|à¤…à¤µà¤°à¥à¤¦à¥à¤§)/i.test(message)
   );
-  if (isKycPressure) {
+  if (isKycPressure || isHindiKycScam) {
     signals.push("Account suspension, KYC expiration, or urgent verification pressure");
     score += 20;
     if (!detectedCategories.includes("Bank/KYC Scam")) detectedCategories.push("Bank/KYC Scam");
@@ -156,7 +175,7 @@ function analyzeWithHeuristics(message) {
   const isUrgent = (
     /immediately|urgent|today\s+only|within\s+\d+\s+(?:hours|mins|minutes)|expire\s+today|act\s+now|last\s+warning|avoid\s+(?:account\s+)?closure|legal\s+action|electricity\s+disconnected/i.test(message) ||
     /(?:turant|aaj\s*hi|jaldi|abhi\s*karo|warna\s*band|aaj\s*raat)/i.test(message) ||
-    /तुरंत|आज\s*ही|अंतिम\s*चेतावनी|जल्दी\s*करें|कानूनी\s*कार्रवाई/i.test(message)
+    /\u0924\u0941\u0930\u0902\u0924|\u0906\u091C\s*\u0939\u0940|\u0905\u0902\u0924\u093F\u092E\s*\u091A\u0947\u0924\u093E\u0935\u0928\u0940|\u091C\u0932\u094D\u0926\u0940\s*\u0915\u0930\u0947\u0902|\u0915\u093E\u0928\u0942\u0928\u0940\s*\u0915\u093E\u0930\u094D\u0930\u0935\u093E\u0908/i.test(message)
   );
   if (isUrgent) {
     signals.push("Urgent or threatening language demanding immediate action");
@@ -165,9 +184,9 @@ function analyzeWithHeuristics(message) {
 
   // 8. Fake Reward / Lottery / Prize (+20)
   const isRewardLottery = (
-    /congratulations!?\s*you\s*won|won\s+(?:₹|\$|\d+|a\s+car|an\s+iphone|cash|lottery)|lottery\s+winner|claim\s+(?:your\s+)?(?:reward|prize)|lucky\s+draw|kbc\s+lucky\s+draw|cashback\s+reward|tax\s+refund/i.test(message) ||
+    /congratulations!?\s*you\s*won|won\s+(?:â‚¹|\$|\d+|a\s+car|an\s+iphone|cash|lottery)|lottery\s+winner|claim\s+(?:your\s+)?(?:reward|prize)|lucky\s+draw|kbc\s+lucky\s+draw|cashback\s+reward|tax\s+refund/i.test(message) ||
     /(?:inaam|inam|lottery|prize|reward)\s*(?:jeeta|mila|nikla|lagi|paneke\s*liye)/i.test(message) ||
-    /बधाई\s*हो!?\s*आपने\s*जीता|इनाम\s*(?:जीता|पाने\s*के\s*लिए)|लॉटरी\s*विजेता/i.test(message)
+    /à¤¬à¤§à¤¾à¤ˆ\s*à¤¹à¥‹!?\s*à¤†à¤ªà¤¨à¥‡\s*à¤œà¥€à¤¤à¤¾|à¤‡à¤¨à¤¾à¤®\s*(?:à¤œà¥€à¤¤à¤¾|à¤ªà¤¾à¤¨à¥‡\s*à¤•à¥‡\s*à¤²à¤¿à¤)|à¤²à¥‰à¤Ÿà¤°à¥€\s*à¤µà¤¿à¤œà¥‡à¤¤à¤¾/i.test(message)
   );
   if (isRewardLottery) {
     signals.push("Unsolicited prize, lottery, cashback, or reward claim");
@@ -176,9 +195,11 @@ function analyzeWithHeuristics(message) {
   }
 
   // 9. Impersonation of Bank / Brand / Govt / Courier (+20)
+  // Requires brand name AND (suspicious/unofficial domain OR a concrete scam signal)
+  // A real brand on their own official domain (amazon.in/orders) alone does NOT trigger this.
   const isImpersonation = (
-    /(?:\b(?:sbi|hdfc|icici|axis|pnb|paytm|phonepe|gpay|google\s*pay|fedex|dhl|india\s*post|customs|tax\s*department)\b|\byour\s+bank\b|\bbank\s+account\b)/i.test(message) &&
-    (urlInfo.urls.length > 0 || isOtpCredential || isKycPressure || isUpfrontFee || isUrgent)
+    /(?:\b(?:sbi|hdfc|icici|axis|pnb|paytm|phonepe|gpay|google\s*pay|fedex|dhl|india\s*post|customs|tax\s*department|amazon|flipkart|meesho|myntra|tata|reliance|bsnl|airtel|jio|swiggy|zomato|ola|uber|naukri|linkedin)\b|\byour\s+bank\b|\bbank\s+account\b)/i.test(message) &&
+    (urlInfo.isSuspiciousLink || isOtpCredential || isKycPressure || isUpfrontFee || isJobScam)
   );
   if (isImpersonation) {
     signals.push("Impersonation of recognized bank, financial service, government entity, or courier");
@@ -192,7 +213,7 @@ function analyzeWithHeuristics(message) {
   const isCryptoInvestment = (
     /crypto\s*returns|bitcoin\s*investment|guaranteed\s*returns|double\s*your\s*money|forex\s*trading\s*profit|daily\s*roi|mining\s*pool/i.test(message) ||
     /(?:paisa\s*double|munafa\s*guaranteed|invest\s*karo\s*double)/i.test(message) ||
-    /दोगुना\s*मुनाफा|निवेश\s*पर\s*गारंटी/i.test(message)
+    /à¤¦à¥‹à¤—à¥à¤¨à¤¾\s*à¤®à¥à¤¨à¤¾à¤«à¤¾|à¤¨à¤¿à¤µà¥‡à¤¶\s*à¤ªà¤°\s*à¤—à¤¾à¤°à¤‚à¤Ÿà¥€/i.test(message)
   );
   if (isCryptoInvestment) {
     signals.push("High-return investment or speculative cryptocurrency/trading promise");
@@ -201,13 +222,20 @@ function analyzeWithHeuristics(message) {
   }
 
   // 11. UPI / Payment Scam (+25)
+  // Covers: scan QR to receive, enter UPI PIN to receive, QR+PIN combos, Hindi/Hinglish variations
   const isUpiScam = (
-    /upi\s*pin\s*to\s*receive|scan\s*qr\s*to\s*receive\s*money|collect\s*request|paytm\s*kyc/i.test(message) ||
-    /(?:paise\s*lene\s*ke\s*liye\s*pin|qr\s*scan\s*karke\s*paise\s*lo)/i.test(message)
+    /(?:scan|scan\s+this)\s+qr\s+(?:code\s+)?(?:to|and|for)\s+(?:receive|get|collect|claim)\s+(?:money|payment|refund|cash)/i.test(message) ||
+    /(?:enter|put|input|dalo)\s+(?:your\s+)?upi\s*(?:pin|password)\s+(?:to|for)\s+(?:receive|get|collect|claim)/i.test(message) ||
+    /upi\s*pin\s+(?:to|for|se)\s+(?:receive|paise\s+aayenge|paise\s+milenge|collect)/i.test(message) ||
+    /receive\s+money\s+(?:by\s+)?(?:entering|using|scanning)\s+(?:upi\s*pin|qr)/i.test(message) ||
+    /upi\s*pin\s*to\s*receive|collect\s*request|paytm\s*kyc/i.test(message) ||
+    /(?:paise\s*lene\s*ke\s*liye\s*(?:pin|qr)|qr\s*scan\s*karke\s*paise\s*lo)/i.test(message) ||
+    /(?:qr\s*code|qr)\s*scan\s*(?:karo|kijiye|karein)\s*(?:aur|to)\s*(?:paise|payment|refund)/i.test(message)
   );
   if (isUpiScam) {
     signals.push("UPI PIN or QR scan request for receiving money (payment fraud tactic)");
     score += 25;
+    score = Math.max(score, 70);
     detectedCategories.push("UPI/Payment Scam");
   }
 
@@ -242,13 +270,13 @@ function analyzeWithHeuristics(message) {
   }
 
   // Determine 4-Tier Risk Level:
-  // 0–29 = Low Risk | 30–59 = Medium Risk | 60–79 = High Risk | 80–100 = Critical Risk
+  // 0â€“29 = Low Risk | 30â€“59 = Medium Risk | 60â€“79 = High Risk | 80â€“100 = Critical Risk
   let riskLevel = "LOW";
   let explanation = "";
 
   if (score >= 80) {
     riskLevel = "CRITICAL";
-    explanation = `Critical Risk (${score}/100) — Severe red flags detected for a ${category}. The message aggressively requests upfront payment, OTP/credentials, or uses extreme urgency.`;
+    explanation = `Critical Risk (${score}/100) â€” Severe red flags detected for a ${category}. The message aggressively requests upfront payment, OTP/credentials, or uses extreme urgency.`;
     doNext.push("Independently verify the sender through official channels before taking any action.");
     doNext.push("Block and report the sender on your messaging app or telecom provider.");
     doNext.push("Check official portals or apps directly rather than opening any link in the message.");
@@ -258,7 +286,7 @@ function analyzeWithHeuristics(message) {
     avoid.push("Do NOT click unverified links, download attachments, or scan provided QR codes.");
   } else if (score >= 60) {
     riskLevel = "HIGH";
-    explanation = `High Risk (${score}/100) — Multiple significant warning signs detected matching typical ${category} patterns. Genuine organizations do not demand fees or credentials like this.`;
+    explanation = `High Risk (${score}/100) â€” Multiple significant warning signs detected matching typical ${category} patterns. Genuine organizations do not demand fees or credentials like this.`;
     doNext.push("Verify the organization's official website or direct customer service numbers.");
     doNext.push("Confirm legitimate recruiter or sender identity before engaging.");
     
@@ -267,7 +295,7 @@ function analyzeWithHeuristics(message) {
     avoid.push("Avoid clicking shortened or unverified URLs.");
   } else if (score >= 30) {
     riskLevel = "MEDIUM";
-    explanation = `Medium Risk (${score}/100) — Some ambiguous or cautionary signals detected. Exercise heightened vigilance before clicking links or sharing info.`;
+    explanation = `Medium Risk (${score}/100) â€” Some ambiguous or cautionary signals detected. Exercise heightened vigilance before clicking links or sharing info.`;
     doNext.push("Double-check sender address and verify links by typing official domains manually.");
     doNext.push("Ask the sender for official corporate verification if in doubt.");
     
@@ -276,7 +304,7 @@ function analyzeWithHeuristics(message) {
   } else {
     riskLevel = "LOW";
     score = Math.min(score, 20);
-    explanation = `Low Risk (${score}/100) — No major scam indicators detected. The text appears to be standard conversational, workplace, or informational communication.`;
+    explanation = `Low Risk (${score}/100) â€” No major scam indicators detected. The text appears to be standard conversational, workplace, or informational communication.`;
     doNext.push("Proceed normally while maintaining standard security habits.");
     doNext.push("Stay alert if any future follow-up suddenly requests payments or passwords.");
     
@@ -309,7 +337,7 @@ async function analyzeWithGemini(message) {
 Analyze the following message for potential scam, phishing, fraud, or risk signals.
 
 SUPPORTED LANGUAGES:
-You must understand English, Hindi (Devanagari script), and Hinglish (Hindi written in Latin script, e.g. "bhai ₹500 fee do", "KYC band ho jayega", "OTP share karo").
+You must understand English, Hindi (Devanagari script), and Hinglish (Hindi written in Latin script, e.g. "bhai â‚¹500 fee do", "KYC band ho jayega", "OTP share karo").
 
 SCORING GUIDELINES (Score 0 to 100):
 - Upfront payment/processing/registration fee: +25
@@ -324,10 +352,10 @@ SCORING GUIDELINES (Score 0 to 100):
 Cap final score at 100.
 
 RISK LEVELS:
-- 0–29 = LOW
-- 30–59 = MEDIUM
-- 60–79 = HIGH
-- 80–100 = CRITICAL
+- 0â€“29 = LOW
+- 30â€“59 = MEDIUM
+- 60â€“79 = HIGH
+- 80â€“100 = CRITICAL
 
 CATEGORIES:
 Choose the most accurate primary category:
@@ -358,7 +386,7 @@ Return your evaluation in strict structured JSON with this exact schema:
   "explanation": "2-3 sentence clear summary explaining why this score was given",
   "doNext": ["clear, actionable protective steps the user should do next"],
   "avoid": ["clear things the user should NOT do / avoid doing"],
-  "importantDetails": ["key extracted data points like mentioned payment amounts (e.g. ₹99, $500), detected links/domains (marked as requiring verification), phone numbers, or deadlines"]
+  "importantDetails": ["key extracted data points like mentioned payment amounts (e.g. â‚¹99, $500), detected links/domains (marked as requiring verification), phone numbers, or deadlines"]
 }`;
 
   const response = await ai.models.generateContent({
@@ -491,7 +519,14 @@ app.get("*", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`==========================================`);
-  console.log(`🛡️  ScamCheck AI Server running on port ${PORT}`);
-  console.log(`🔑  Gemini API Key status: ${API_KEY ? "Configured" : "Not configured (Using Security Heuristic Engine)"}`);
+  console.log(`ðŸ›¡ï¸  ScamCheck AI Server running on port ${PORT}`);
+  console.log(`ðŸ”‘  Gemini API Key status: ${API_KEY ? "Configured" : "Not configured (Using Security Heuristic Engine)"}`);
   console.log(`==========================================`);
 });
+
+
+
+
+
+
+
