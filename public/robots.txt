@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://scamcheck-ai.onrender.com/sitemap.xml
